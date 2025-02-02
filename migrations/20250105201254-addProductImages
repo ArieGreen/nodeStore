@@ -1,0 +1,24 @@
+'use strict';
+
+const data = require('../data/productimages.json');
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    const createdAt = new Date();
+    const updatedAt = new Date();
+    const images = data.flatMap(product => 
+      product.images.map(imageUrl => ({
+        productId: product.productId,
+        imageUrl,
+        createdAt,
+        updatedAt
+      }))
+    );
+    await queryInterface.bulkInsert('product_images', images, {});
+  },
+
+  async down(queryInterface, Sequelize) {
+    await queryInterface.bulkDelete('product_images', null, {});
+  }
+};
